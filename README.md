@@ -95,6 +95,17 @@ Top recommendations
 ------------------------------------------------------------------------
 ```
 
+Screenshot insert location:
+
+Place your terminal screenshot directly below this section, using Markdown image syntax like this:
+
+```markdown
+![CLI recommender output](data/CLI_Output.png)
+![Pytest output](data/CLI_output2.png)
+```
+
+If you keep the image in a different folder, update the path to match where you save it.
+
 Some prompts to answer:
 
 - What features does each `Song` use in your system
