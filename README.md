@@ -13,11 +13,87 @@ Your goal is to:
 
 Replace this paragraph with your own summary of what your version does.
 
+This project simulates a content-based music recommender that predicts what a user may like next by matching song attributes to a simple taste profile. Real platforms (for example Spotify and YouTube) usually combine collaborative filtering (patterns from similar users: likes, skips, repeats, playlists, watch/listen sessions) with content-based filtering (attributes of the item itself: genre, tempo, mood, energy, acousticness, language, and metadata). In this classroom version, I prioritize transparent content signals so each recommendation can be explained directly from song features.
+
 ---
 
 ## How The System Works
 
 Explain your design in plain language.
+
+I expanded the catalog from 10 to 18 songs in `data/songs.csv` and made it more diverse across genres and moods so the recommender can learn clearer differences between styles (for example classical-serene vs metal-aggressive vs lofi-chill).
+
+Final UserProfile for simulation testing:
+
+```python
+user_profile = {
+   "favorite_genre": "lofi",
+   "favorite_mood": "chill",
+   "target_energy": 0.40,
+   "target_valence": 0.60,
+   "target_tempo_bpm": 82,
+   "likes_acoustic": True,
+}
+```
+
+Profile critique and refinement:
+
+- This profile is not too narrow because it includes both categorical preferences (`genre`, `mood`) and numeric vibe targets (`energy`, `valence`, `tempo_bpm`).
+- It should clearly separate intense rock/metal from chill lofi because those tracks differ strongly on `mood`, `energy`, and `tempo_bpm`.
+
+Final Algorithm Recipe:
+
+1. For each song, start with score = 0.
+2. Add +2.0 if `song.genre == favorite_genre`.
+3. Add +1.0 if `song.mood == favorite_mood`.
+4. Add energy similarity points using closeness, not magnitude:
+   `energy_points = 2.0 * max(0, 1 - abs(song.energy - target_energy))`
+5. Add valence similarity points:
+   `valence_points = 1.0 * max(0, 1 - abs(song.valence - target_valence))`
+6. Add tempo similarity points:
+   `tempo_points = 1.0 * max(0, 1 - abs(song.tempo_bpm - target_tempo_bpm) / 80)`
+7. Add +0.5 acoustic bonus when `likes_acoustic` aligns with song acousticness threshold.
+8. Save `(song, score)` for every row.
+9. Sort by score descending and return Top K songs.
+
+Data flow map:
+
+```mermaid
+flowchart LR
+   A[Input: User Preferences] --> B[Load songs.csv]
+   B --> C[Loop through each song]
+   C --> D[Compute weighted score\nGenre + Mood + Energy + Valence + Tempo + Acoustic bonus]
+   D --> E[Store song and score]
+   E --> F[Sort all songs by score descending]
+   F --> G[Output: Top K recommendations]
+```
+
+Potential bias note:
+
+- This system may over-prioritize genre labels and under-recommend cross-genre songs that match the same emotional vibe.
+- Because weights are hand-tuned, it may reflect my personal assumptions of what matters most in music taste.
+
+CLI verification snapshot:
+
+```text
+Loaded songs: 18
+
+Top recommendations
+
+========================================================================
+1. Sunrise City by Neon Echo
+   Score   : 7.34
+   Reasons : genre match (+2.0); mood match (+1.0); energy closeness (+1.96); valence closeness (+0.91); tempo closeness (+0.97); acoustic preference match (+0.5)
+------------------------------------------------------------------------
+2. Gym Hero by Max Pulse
+   Score   : 6.07
+   Reasons : genre match (+2.0); energy closeness (+1.74); valence closeness (+0.98); tempo closeness (+0.85); acoustic preference match (+0.5)
+------------------------------------------------------------------------
+3. Rooftop Lights by Indigo Parade
+   Score   : 5.31
+   Reasons : mood match (+1.0); energy closeness (+1.92); valence closeness (+0.94); tempo closeness (+0.95); acoustic preference match (+0.5)
+------------------------------------------------------------------------
+```
 
 Some prompts to answer:
 
@@ -41,6 +117,8 @@ You can include a simple diagram or bullet list if helpful.
    python -m venv .venv
    source .venv/bin/activate      # Mac or Linux
    .venv\Scripts\activate         # Windows
+
+   ```
 
 2. Install dependencies
 
@@ -101,12 +179,11 @@ Write 1 to 2 paragraphs here about what you learned:
 - about how recommenders turn data into predictions
 - about where bias or unfairness could show up in systems like this
 
-
 ---
 
 ## 7. `model_card_template.md`
 
-Combines reflection and model card framing from the Module 3 guidance. :contentReference[oaicite:2]{index=2}  
+Combines reflection and model card framing from the Module 3 guidance. :contentReference[oaicite:2]{index=2}
 
 ```markdown
 # 🎧 Model Card - Music Recommender Simulation
@@ -158,6 +235,7 @@ Describe your dataset.
 Where does your recommender work well
 
 You can think about:
+
 - Situations where the top results "felt right"
 - Particular user profiles it served well
 - Simplicity or transparency benefits
@@ -169,6 +247,7 @@ You can think about:
 Where does your recommender struggle
 
 Some prompts:
+
 - Does it ignore some genres or moods
 - Does it treat all users as if they have the same taste shape
 - Is it biased toward high energy or one genre by default
@@ -181,6 +260,7 @@ Some prompts:
 How did you check your system
 
 Examples:
+
 - You tried multiple user profiles and wrote down whether the results matched your expectations
 - You compared your simulation to what a real app like Spotify or YouTube tends to recommend
 - You wrote tests for your scoring logic
@@ -208,4 +288,4 @@ A few sentences about what you learned:
 - What surprised you about how your system behaved
 - How did building this change how you think about real music recommenders
 - Where do you think human judgment still matters, even if the model seems "smart"
-
+```
