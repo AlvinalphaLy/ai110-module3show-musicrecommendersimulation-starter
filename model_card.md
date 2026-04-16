@@ -1,111 +1,78 @@
 # 🎧 Model Card: Music Recommender Simulation
 
-## 1. Model Name  
+## 1. Model Name
 
-Give your model a short, descriptive name.  
-Example: **VibeFinder 1.0**  
-
----
-
-## 2. Intended Use  
-
-Describe what your recommender is designed to do and who it is for. 
-
-Prompts:  
-
-- What kind of recommendations does it generate  
-- What assumptions does it make about the user  
-- Is this for real users or classroom exploration  
+VibeFinder 1.0
 
 ---
 
-## 3. How the Model Works  
+## 2. Goal / Task
 
-Explain your scoring approach in simple language.  
-
-Prompts:  
-
-- What features of each song are used (genre, energy, mood, etc.)  
-- What user preferences are considered  
-- How does the model turn those into a score  
-- What changes did you make from the starter logic  
-
-Avoid code here. Pretend you are explaining the idea to a friend who does not program.
+This model suggests songs from a small catalog.
+It tries to match a user’s taste profile.
+It is for classroom exploration, not real users.
 
 ---
 
-## 4. Data  
+## 3. Data Used
 
-Describe the dataset the model uses.  
-
-Prompts:  
-
-- How many songs are in the catalog  
-- What genres or moods are represented  
-- Did you add or remove data  
-- Are there parts of musical taste missing in the dataset  
+The dataset has 18 songs in `data/songs.csv`.
+Each song has genre, mood, energy, tempo, valence, danceability, and acousticness.
+The catalog is small, so it does not cover every kind of music taste.
+It also reflects the styles I added to the starter set.
 
 ---
 
-## 5. Strengths  
+## 4. Algorithm Summary
 
-Where does your system seem to work well  
-
-Prompts:  
-
-- User types for which it gives reasonable results  
-- Any patterns you think your scoring captures correctly  
-- Cases where the recommendations matched your intuition  
+The recommender gives points for matches.
+It rewards the same genre and mood as the user.
+It also rewards songs that are close in energy, valence, tempo, and acousticness.
+Songs with the highest total score are recommended first.
 
 ---
 
-## 6. Limitations and Bias 
+## 5. Observed Behavior / Biases
 
-Where the system struggles or behaves unfairly. 
-
-Prompts:  
-
-- Features it does not consider  
-- Genres or moods that are underrepresented  
-- Cases where the system overfits to one preference  
-- Ways the scoring might unintentionally favor some users  
+The model can over-favor songs that match several strong signals at once.
+It can also keep recommending the same songs because the catalog is small.
+The dataset has more chill and acoustic songs than some other styles.
+That can make the results less balanced for users who want harder or stranger combinations.
+The model does not understand lyrics, language, or listening history.
 
 ---
 
-## 7. Evaluation  
+## 6. Evaluation Process
 
-How you checked whether the recommender behaved as expected. 
-
-Prompts:  
-
-- Which user profiles you tested  
-- What you looked for in the recommendations  
-- What surprised you  
-- Any simple tests or comparisons you ran  
-
-No need for numeric metrics unless you created some.
+I tested four profiles: High-Energy Pop, Chill Lofi, Deep Intense Rock, and a conflicting edge case.
+I compared the top five songs for each profile.
+I also tried a weight shift where energy mattered more and genre mattered less.
+That made the results feel more responsive to mood and tempo.
+It also made the ranking a little less stable.
 
 ---
 
-## 8. Future Work  
+## 7. Intended Use and Non-Intended Use
 
-Ideas for how you would improve the model next.  
-
-Prompts:  
-
-- Additional features or preferences  
-- Better ways to explain recommendations  
-- Improving diversity among the top results  
-- Handling more complex user tastes  
+This model is meant for a classroom demo.
+It is useful for showing how scoring rules turn data into recommendations.
+It should not be used for real music product decisions.
+It should not be used to predict real user behavior or fairness.
 
 ---
 
-## 9. Personal Reflection  
+## 8. Ideas for Improvement
 
-A few sentences about your experience.  
+I would add more songs.
+I would add a diversity rule so the top results are less repetitive.
+I would also add more user features, like language or genre ranges.
 
-Prompts:  
+---
 
-- What you learned about recommender systems  
-- Something unexpected or interesting you discovered  
-- How this changed the way you think about music recommendation apps  
+## 9. Personal Reflection
+
+My biggest learning moment was seeing how simple rules can still feel like real recommendations.
+AI tools helped me test ideas quickly and spot bias patterns faster.
+I still had to double-check the outputs, because a good explanation does not always mean the ranking is balanced.
+What surprised me most was how a small scoring change could shift the whole list.
+If I extended this project, I would try more profiles and add diversity controls.

@@ -97,14 +97,16 @@ Top recommendations
 
 Screenshot insert location:
 
-Place your terminal screenshot directly below this section, using Markdown image syntax like this:
-
-```markdown
-![CLI recommender output](data/CLI_Output.png)
-![Pytest output](data/CLI_output2.png)
-```
+![High-Energy Pop recommendations](data/high-energy-pop.png)
+![Chill Lofi recommendations](data/chill-lofi.png)
+![Deep Intense Rock recommendations](data/deep-intense-rock.png)
+![Conflicting edge case recommendations](data/conflicting-edge-case.png)
 
 If you keep the image in a different folder, update the path to match where you save it.
+
+Experiment note:
+
+- I also tested a weight shift where energy mattered more and genre mattered less, which made the results feel more responsive to tempo and mood but slightly less stable when two songs were close together.
 
 Some prompts to answer:
 
